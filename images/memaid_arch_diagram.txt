@@ -121,4 +121,5 @@ graph TB
     %% Note annotation
     NOTE[📝 Note: Demo uses Cloud Run for all agents<br/>Production migration to Vertex AI Agent Engine<br/>provides OOTB session & memory management]
     
+
     style NOTE fill:#fff3cd,stroke:#856404,stroke-width:2px,color:#856404

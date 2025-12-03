@@ -1,0 +1,124 @@
+graph TB
+    subgraph "User Layer"
+        UI[Dashboard UI<br/>React + TypeScript<br/>Cloud Run]
+    end
+
+    subgraph "Orchestration Layer - Cloud Run"
+        ORCH[Master Orchestrator Agent<br/>Cloud Run Container<br/>Using ADK Framework<br/>Coordinates A2A Messages]
+    end
+
+    subgraph "Agent Layer - Cloud Run (Demo) → Agent Engine (Production)"
+        subgraph "Scoring Agents"
+            RS[Risk Scoring Agent<br/>Cloud Run + ADK<br/>→ Agent Engine]
+            FF[Financial Forecasting Agent<br/>Cloud Run + ADK<br/>→ Agent Engine]
+            PM[Portfolio Monitoring Agent<br/>Cloud Run + ADK<br/>→ Agent Engine]
+        end
+        
+        subgraph "Intelligence Agents"
+            NI[News Intelligence Agent<br/>Cloud Run + ADK<br/>→ Agent Engine]
+            EI[Event Intelligence Agent<br/>Cloud Run + ADK<br/>→ Agent Engine]
+            RC[Root Cause Analysis Agent<br/>Cloud Run + ADK<br/>→ Agent Engine]
+            MS[Macro & Sector Agent<br/>Cloud Run + ADK<br/>→ Agent Engine]
+        end
+        
+        subgraph "Interaction Agents"
+            CHAT[Credit Risk Assistant<br/>Cloud Run + ADK<br/>→ Agent Engine]
+            TASK[Task Management Agent<br/>Cloud Run + ADK<br/>→ Agent Engine]
+            SIM[Scenario Simulation Agent<br/>Cloud Run + ADK<br/>→ Agent Engine]
+            SME[SME Analysis Agent<br/>Cloud Run + ADK<br/>→ Agent Engine]
+        end
+    end
+
+    subgraph "MCP Protocol Layer"
+        MCP[Model Context Protocol<br/>Agent-to-Server Communication]
+    end
+
+    subgraph "MCP Servers - Mock Demo Implementation"
+        subgraph "Data Source MCPs"
+            EXP[Experian MCP<br/>Mock Server]
+            CB[Crunchbase MCP<br/>Mock Server]
+            CH[Companies House MCP<br/>Mock Server]
+            LI[LinkedIn MCP<br/>Mock Server]
+            GA[Google Analytics MCP<br/>Mock Server]
+        end
+        
+        subgraph "Financial & Market MCPs"
+            BB[Bloomberg MCP<br/>Mock Server]
+            FRED[FRED Economic Data MCP<br/>Mock Server]
+            CS[Credit System MCP<br/>Mock Server]
+        end
+        
+        subgraph "Integration MCPs"
+            TM[Task Management MCP<br/>Mock Server]
+            ALERT[Alerting MCP<br/>Mock Server]
+            HR[HR System MCP<br/>Mock Server]
+        end
+        
+        subgraph "Storage & Compute MCPs"
+            BQ[BigQuery MCP<br/>Mock Server]
+            VAI[Vertex AI Model MCP<br/>Mock Server]
+            FS[Feature Store MCP<br/>Mock Server]
+        end
+    end
+
+    UI -->|HTTPS/WebSocket| ORCH
+
+    ORCH -.->|A2A Protocol| RS
+    ORCH -.->|A2A Protocol| FF
+    ORCH -.->|A2A Protocol| PM
+    ORCH -.->|A2A Protocol| NI
+    ORCH -.->|A2A Protocol| EI
+    ORCH -.->|A2A Protocol| RC
+    ORCH -.->|A2A Protocol| MS
+    ORCH -.->|A2A Protocol| CHAT
+    ORCH -.->|A2A Protocol| TASK
+    ORCH -.->|A2A Protocol| SIM
+    ORCH -.->|A2A Protocol| SME
+
+    RS <-.->|A2A| PM
+    NI <-.->|A2A| EI
+    NI <-.->|A2A| TASK
+    EI <-.->|A2A| SIM
+    SIM <-.->|A2A| TASK
+    RC <-.->|A2A| RS
+    CHAT <-.->|A2A| SME
+
+    RS -->|MCP Protocol| MCP
+    FF -->|MCP Protocol| MCP
+    PM -->|MCP Protocol| MCP
+    NI -->|MCP Protocol| MCP
+    EI -->|MCP Protocol| MCP
+    RC -->|MCP Protocol| MCP
+    MS -->|MCP Protocol| MCP
+    CHAT -->|MCP Protocol| MCP
+    TASK -->|MCP Protocol| MCP
+    SIM -->|MCP Protocol| MCP
+    SME -->|MCP Protocol| MCP
+
+    MCP --> EXP
+    MCP --> CB
+    MCP --> CH
+    MCP --> LI
+    MCP --> GA
+    MCP --> BB
+    MCP --> FRED
+    MCP --> CS
+    MCP --> TM
+    MCP --> ALERT
+    MCP --> HR
+    MCP --> BQ
+    MCP --> VAI
+    MCP --> FS
+
+    classDef cloudRun fill:#4285f4,stroke:#1a73e8,stroke-width:3px,color:#fff
+    classDef mcp fill:#fbbc04,stroke:#ea8600,stroke-width:3px,color:#000
+    classDef mock fill:#e8eaed,stroke:#5f6368,stroke-width:2px,color:#000,stroke-dasharray: 5 5
+
+    class UI,ORCH,RS,FF,PM,NI,EI,RC,MS,CHAT,TASK,SIM,SME cloudRun
+    class MCP mcp
+    class EXP,CB,CH,LI,GA,BB,FRED,CS,TM,ALERT,HR,BQ,VAI,FS mock
+
+    %% Note annotation
+    NOTE[📝 Note: Demo uses Cloud Run for all agents<br/>Production migration to Vertex AI Agent Engine<br/>provides OOTB session & memory management]
+    
+    style NOTE fill:#fff3cd,stroke:#856404,stroke-width:2px,color:#856404
